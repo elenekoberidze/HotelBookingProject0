@@ -30,7 +30,14 @@ namespace HotelBookingProject0.Services
         public async Task<IEnumerable<HotelDTO>> GetAllHotelsAsync()
         {
 
-            return (IEnumerable<HotelDTO>)await hotelBookingContext.Hotels.ToListAsync();
+            return (IEnumerable<HotelDTO>)await hotelBookingContext.Hotels.Select(h => new HotelDTO
+            {
+                Name = h.Name,
+                City = h.City,
+                Address = h.Address,
+                StarRating = (Models.DTO.HotelStarRating)h.StarRating,
+                Status = (Models.DTO.HotelStatus)h.Status
+            }).ToListAsync();
         }
 
 
