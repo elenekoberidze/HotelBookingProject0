@@ -1,4 +1,6 @@
 using HotelBookingProject0.Data;
+using HotelBookingProject0.Interfaces;
+using HotelBookingProject0.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,7 @@ builder.Services.AddSwaggerGen();
 string connectionString = builder.Configuration.GetConnectionString("HotelDatabase") ?? string.Empty;
 builder.Services.AddSqlServer<HotelBookingContext>(connectionString);
 
+builder.Services.AddScoped<IHotelServices, HotelServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
