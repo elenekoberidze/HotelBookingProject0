@@ -8,10 +8,8 @@ namespace HotelBookingProject0.Models.Entities
         public int AmenityID { get; set; }
 
         [Required, StringLength(50)]
-        public string Name { get; set; } 
+        public string Name { get; set; } = null!;
 
-        public string Icon { get; set; } 
-
-        public virtual ICollection<Room> Rooms { get; set; }
+        public virtual ICollection<Room> Rooms { get; set; } = null!;
     }
 }

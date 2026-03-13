@@ -10,11 +10,11 @@ namespace HotelBookingProject0.Models.Entities
 
         public int UserID { get; set; }
         [ForeignKey("UserID")]
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = null!;
 
         public int RoomID { get; set; }
         [ForeignKey("RoomID")]
-        public virtual Room Room { get; set; }
+        public virtual Room Room { get; set; } = null!;
 
         [Required]
         public DateTime CheckInDate { get; set; }

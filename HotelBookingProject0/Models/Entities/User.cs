@@ -8,17 +8,17 @@ namespace HotelBookingProject0.Models.Entities
         public int UserID { get; set; }
 
         [Required, StringLength(50)]
-        public string Username { get; set; }
+        public string Username { get; set; } = null!;
 
         [Required, EmailAddress, StringLength(100)]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
 
         [Required]
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; set; } = null!;
         public bool IsActive { get; set; } = true;
 
-        public virtual UserProfile Profile { get; set; }
-        public virtual ICollection<Booking> Bookings { get; set; }
-        public virtual ICollection<Review> Reviews { get; set; }
+        public virtual UserProfile Profile { get; set; } = null!;
+        public virtual ICollection<Booking> Bookings { get; set; } = null!;
+        public virtual ICollection<Review> Reviews { get; set; } = null!;
     }
 }

@@ -10,16 +10,16 @@ namespace HotelBookingProject0.Models.Entities
 
         public int UserID { get; set; }
         [ForeignKey("UserID")]
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = null!;
 
         public int HotelID { get; set; }
         [ForeignKey("HotelID")]
-        public virtual Hotel Hotel { get; set; }
+        public virtual Hotel Hotel { get; set; } = null!;
 
         [Range(1, 5)]
         public int Rating { get; set; }
 
-        public string Comment { get; set; }
+        public string Comment { get; set; } = null!;
 
         public DateTime ReviewDate { get; set; } = DateTime.UtcNow;
     }

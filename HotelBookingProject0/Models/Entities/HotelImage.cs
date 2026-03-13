@@ -10,10 +10,10 @@ namespace HotelBookingProject0.Models.Entities
 
         public int HotelID { get; set; }
         [ForeignKey("HotelID")]
-        public virtual Hotel Hotel { get; set; }
+        public virtual Hotel Hotel { get; set; } = null!;
 
         [Required]
-        public string ImageURL { get; set; }
+        public string ImageURL { get; set; } = null!;
 
         public bool IsPrimary { get; set; } = false;
     }

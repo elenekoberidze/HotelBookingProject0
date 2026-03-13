@@ -12,9 +12,9 @@ namespace HotelBookingProject0.Models.Entities
         public int RoomID { get; set; }
 
         [ForeignKey("RoomID")]
-        public virtual Room Room { get; set; }
+        public virtual Room Room { get; set; } = null!;
 
         [Required]
-        public string ImageURL { get; set; }
+        public string ImageURL { get; set; } = null!;
     }
 }

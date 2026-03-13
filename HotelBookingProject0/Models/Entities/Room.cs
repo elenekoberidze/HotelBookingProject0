@@ -9,14 +9,14 @@ namespace HotelBookingProject0.Models.Entities
         public int RoomID { get; set; }
         public int HotelID { get; set; }
         [ForeignKey("HotelID")]
-        public virtual Hotel Hotel { get; set; }
+        public virtual Hotel Hotel { get; set; } = null!;
 
         public int TypeID { get; set; }
         [ForeignKey("TypeID")]
-        public virtual RoomType RoomType { get; set; }
+        public virtual RoomType RoomType { get; set; } = null!;
 
         [Required, StringLength(10)]
-        public string RoomNumber { get; set; }
+        public string RoomNumber { get; set; } = null!;
 
         public bool IsAvailable { get; set; } = true;
 

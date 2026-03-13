@@ -1,6 +1,6 @@
 using HotelBookingProject0.Data;
-using HotelBookingProject0.Interfaces;
 using HotelBookingProject0.Services;
+using HotelBookingProject0.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,4 +30,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

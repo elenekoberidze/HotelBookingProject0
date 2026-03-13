@@ -8,7 +8,7 @@ namespace HotelBookingProject0.Models.Entities
         public int TypeID { get; set; }
 
         [Required, StringLength(50)]
-        public string TypeName { get; set; }
+        public string TypeName { get; set; } = null!;
 
         [Required, Range(0.01, double.MaxValue)]
         public decimal BasePrice { get; set; }
