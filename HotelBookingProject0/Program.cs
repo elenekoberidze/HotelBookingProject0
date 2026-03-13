@@ -1,6 +1,9 @@
 using HotelBookingProject0.Data;
+using HotelBookingProject0.Models.Entities;
 using HotelBookingProject0.Services;
 using HotelBookingProject0.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +14,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string connectionString = builder.Configuration.GetConnectionString("HotelDatabase") ?? string.Empty;
-builder.Services.AddSqlServer<HotelBookingContext>(connectionString);
+builder.Services.AddDbContext<HotelBookingContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("HotelApiDatabase")));
+
+
+builder.Services.AddIdentity<User, IdentityRole>(options => {
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+})
+.AddEntityFrameworkStores<HotelBookingContext>();
 
 builder.Services.AddScoped<IHotelServices, HotelServices>();
+builder.Services.AddScoped<IAuthService, AuthServices>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

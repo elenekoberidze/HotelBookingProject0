@@ -8,7 +8,7 @@ namespace HotelBookingProject0.Models.Entities
         [Key]
         public int ReviewID { get; set; }
 
-        public int UserID { get; set; }
+        public string UserID { get; set; }
         [ForeignKey("UserID")]
         public virtual User User { get; set; } = null!;
 

@@ -1,9 +1,10 @@
 ﻿using HotelBookingProject0.Models.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelBookingProject0.Data
 {
-    public class HotelBookingContext : DbContext
+    public class HotelBookingContext : IdentityDbContext<User>
     {
         public HotelBookingContext()
         {
@@ -12,6 +13,9 @@ namespace HotelBookingProject0.Data
         public HotelBookingContext(DbContextOptions options) : base(options)
         {
         }
-        public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<Hotel> Hotels { get; set; } 
+
+
     }
 }
