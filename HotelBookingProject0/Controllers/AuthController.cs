@@ -18,8 +18,16 @@ namespace HotelBookingProject0.Controllers
         public async Task<IActionResult> Register([FromForm] RegisterDTO dto)
         {
             if (!ModelState.IsValid) { return BadRequest(ValidationError()); }
-            var result = await auth.RegisterAsync(dto);
-            return StatusCode(201, result);
+
+            try
+            {
+                var result = await auth.RegisterAsync(dto);
+                return StatusCode(201, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         
@@ -27,14 +35,22 @@ namespace HotelBookingProject0.Controllers
         public async Task<IActionResult> Login([FromForm] LoginDTO dto)
         {
             if (!ModelState.IsValid) { return BadRequest(ValidationError()); }
-            var result = await auth.LoginAsync(dto);
-            return Ok(result);
+
+            try
+            {
+                var result = await auth.LoginAsync(dto);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
         }
 
      
         [Authorize]
         [HttpGet("current-user")]
-        public async Task<IActionResult> GetMe()
+        public async Task<IActionResult> GetCurrentUser()
         {
             var result = await auth.GetUserAsync(UserId());
             return Ok(result);
@@ -43,7 +59,7 @@ namespace HotelBookingProject0.Controllers
         
         [Authorize]
         [HttpGet("current-user/profile")]
-        public async Task<IActionResult> GetMyProfile()
+        public async Task<IActionResult> GetCurrentUsersProfile()
         {
             var result = await auth.GetProfileAsync(UserId());
             return Ok(result);
@@ -52,7 +68,7 @@ namespace HotelBookingProject0.Controllers
         
         [Authorize]
         [HttpPut("current-user/profile")]
-        public async Task<IActionResult> UpdateMyProfile([FromForm] UserProfileDTO dto)
+        public async Task<IActionResult> UpdateCurrentUsersProfile([FromForm] UserProfileDTO dto)
         {
             var result = await auth.UpdateProfileAsync(UserId(), dto);
             return Ok(result);
