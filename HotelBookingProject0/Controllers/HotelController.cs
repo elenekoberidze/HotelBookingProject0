@@ -40,6 +40,14 @@ namespace HotelBookingProject0.Controllers
             }
             return Ok(hotel);
         }
+
+
+    [HttpGet("GetCities")]
+        public async Task<ActionResult<IEnumerable<HotelDTO>>> GetCities()
+        {
+            var hotels = await hotelServices.GetCitiesAsync();
+            return Ok(hotels);
+        }
     }
 }
 

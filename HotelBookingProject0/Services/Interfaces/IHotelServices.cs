@@ -19,5 +19,7 @@ namespace HotelBookingProject0.Services.Interfaces
         /// </summary>
         Task<HotelDTO?> GetHotelByCityAsync(string city);
 
+        Task<IEnumerable<HotelDTO>> GetCitiesAsync();
+
     }
 }

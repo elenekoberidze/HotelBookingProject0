@@ -25,6 +25,19 @@ namespace HotelBookingProject0.Services
         }
 
         //<inheritdoc/>
+        public async Task<IEnumerable<HotelDTO>> GetCitiesAsync()
+        {
+            return await hotelBookingContext.Hotels.Select(h => new HotelDTO
+            {
+                Name = h.Name,
+                City = h.City,
+                Address = h.Address,
+                StarRating = (Models.DTO.HotelStarRating)h.StarRating,
+                Status = (Models.DTO.HotelStatus)h.Status
+            }).ToListAsync();
+        }
+
+        //<inheritdoc/>
         public async Task<HotelDTO?> GetHotelByCityAsync(string city)
         {
             var hotel = await hotelBookingContext.Hotels
