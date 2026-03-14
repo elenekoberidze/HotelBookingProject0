@@ -30,7 +30,7 @@ namespace HotelBookingProject0.Controllers
             return Ok(hotel);
         }
 
-        [HttpGet("GetHotelsByCity")]
+        [HttpGet("GetHotelsBy{city}")]
         public async Task<ActionResult<HotelDTO>> GetByCity(string city)
         {
             var hotel = await hotelServices.GetHotelByCityAsync(city);
