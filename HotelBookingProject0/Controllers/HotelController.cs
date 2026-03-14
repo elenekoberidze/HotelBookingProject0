@@ -15,7 +15,7 @@ namespace HotelBookingProject0.Controllers
         public async Task<ActionResult<IEnumerable<HotelDTO>>> GetAll()
         {
             var hotels = await hotelServices.GetAllHotelsAsync();
-            return Ok(hotels); 
+            return Ok(hotels);
         }
 
         [HttpGet("GetHotelBy{id}")]
@@ -26,6 +26,17 @@ namespace HotelBookingProject0.Controllers
             if (hotel == null)
             {
                 return NotFound(new { message = $"Hotel with ID {id} was not found." });
+            }
+            return Ok(hotel);
+        }
+
+        [HttpGet("GetHotelsByCity")]
+        public async Task<ActionResult<HotelDTO>> GetByCity(string city)
+        {
+            var hotel = await hotelServices.GetHotelByCityAsync(city);
+            if (hotel == null)
+            {
+                return NotFound(new { message = $"Hotel in  {city} was not found." });
             }
             return Ok(hotel);
         }

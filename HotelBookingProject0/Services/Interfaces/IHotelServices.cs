@@ -13,8 +13,11 @@ namespace HotelBookingProject0.Services.Interfaces
         /// <summary>
         /// This method retrieves a specific hotel by its unique identifier (ID).
         /// </summary>
-        /// <param name="id"></param>
         Task<HotelDTO?> GetHotelByIdAsync(int id);
-        
+        /// <summary>
+        /// Asynchronously retrieves hotel information for the specified city.
+        /// </summary>
+        Task<HotelDTO?> GetHotelByCityAsync(string city);
+
     }
 }

@@ -25,6 +25,23 @@ namespace HotelBookingProject0.Services
         }
 
         //<inheritdoc/>
+        public async Task<HotelDTO?> GetHotelByCityAsync(string city)
+        {
+            var hotel = await hotelBookingContext.Hotels
+                       .FirstOrDefaultAsync(h => h.City == city);
+
+            if (hotel is null) { return null; }
+            return new HotelDTO
+            {
+                Name = hotel.Name,
+                City = hotel.City,
+                Address = hotel.Address,
+                StarRating = (Models.DTO.HotelStarRating)hotel.StarRating,
+                Status = (Models.DTO.HotelStatus)hotel.Status
+            };
+        }
+
+        //<inheritdoc/>
         public async Task<HotelDTO?> GetHotelByIdAsync(int id)
         {
             var hotel = await hotelBookingContext.Hotels
