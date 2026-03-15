@@ -17,7 +17,10 @@ namespace HotelBookingProject0.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterDTO dto)
         {
-            if (!ModelState.IsValid) { return BadRequest(ValidationError()); }
+            if (!ModelState.IsValid) 
+            { 
+                return BadRequest(ValidationError()); 
+            }
 
             try
             {
@@ -30,11 +33,14 @@ namespace HotelBookingProject0.Controllers
             }
         }
 
-        
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm] LoginDTO dto)
         {
-            if (!ModelState.IsValid) { return BadRequest(ValidationError()); }
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest(ValidationError()); 
+            }
 
             try
             {
@@ -46,34 +52,6 @@ namespace HotelBookingProject0.Controllers
                 return Unauthorized(new { message = ex.Message });
             }
         }
-
-     
-        [Authorize]
-        [HttpGet("current-user")]
-        public async Task<IActionResult> GetCurrentUser()
-        {
-            var result = await auth.GetUserAsync(UserId());
-            return Ok(result);
-        }
-
-        
-        [Authorize]
-        [HttpGet("current-user/profile")]
-        public async Task<IActionResult> GetCurrentUsersProfile()
-        {
-            var result = await auth.GetProfileAsync(UserId());
-            return Ok(result);
-        }
-
-        
-        [Authorize]
-        [HttpPut("current-user/profile")]
-        public async Task<IActionResult> UpdateCurrentUsersProfile([FromForm] UserProfileDTO dto)
-        {
-            var result = await auth.UpdateProfileAsync(UserId(), dto);
-            return Ok(result);
-        }
-        private string UserId() => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
         private object ValidationError() => new
         {

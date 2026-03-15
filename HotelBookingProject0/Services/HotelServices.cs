@@ -23,7 +23,6 @@ namespace HotelBookingProject0.Services
                 Status = (Models.DTO.HotelStatus)h.Status
             }).ToListAsync();
         }
-
         //<inheritdoc/>
         public async Task<IEnumerable<HotelDTO>> GetCitiesAsync()
         {

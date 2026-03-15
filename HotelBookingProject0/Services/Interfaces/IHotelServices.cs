@@ -18,7 +18,9 @@ namespace HotelBookingProject0.Services.Interfaces
         /// Asynchronously retrieves hotel information for the specified city.
         /// </summary>
         Task<HotelDTO?> GetHotelByCityAsync(string city);
-
+        /// <summary>
+        /// This method returns a list of all Cities in the system. 
+        /// </summary>
         Task<IEnumerable<HotelDTO>> GetCitiesAsync();
 
     }
