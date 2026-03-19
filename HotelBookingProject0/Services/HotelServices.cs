@@ -14,14 +14,18 @@ namespace HotelBookingProject0.Services
         //<inheritdoc/>
         public async Task<IEnumerable<HotelDTO>> GetAllHotelsAsync()
         {
-            return await hotelBookingContext.Hotels.Select(h => new HotelDTO
-            {
-                Name = h.Name,
-                City = h.City,
-                Address = h.Address,
-                StarRating = (Models.DTO.HotelStarRating)h.StarRating,
-                Status = (Models.DTO.HotelStatus)h.Status
-            }).ToListAsync();
+            return await hotelBookingContext.Hotels
+                .Include(h => h.Images)
+                .Select(h => new HotelDTO
+                {
+                    Name = h.Name,
+                    City = h.City,
+                    Address = h.Address,
+                    StarRating = (Models.DTO.HotelStarRating)h.StarRating,
+                    Status = (Models.DTO.HotelStatus)h.Status,
+                    Images = h.Images.Select(i => i.ImageURL).ToList(),
+                    AverageReviewScore = h.Reviews.Count != 0 ? h.Reviews.Average(r => r.Rating) : 0
+                }).ToListAsync();
         }
         //<inheritdoc/>
         public async Task<IEnumerable<HotelDTO>> GetCitiesAsync()
@@ -40,6 +44,10 @@ namespace HotelBookingProject0.Services
         public async Task<HotelDTO?> GetHotelByCityAsync(string city)
         {
             var hotel = await hotelBookingContext.Hotels
+                       .Include(h => h.Rooms)
+                           .ThenInclude(r => r.Images)
+                       .Include(h => h.Images)
+                       .Include(h => h.Reviews)
                        .FirstOrDefaultAsync(h => h.City == city);
 
             if (hotel is null) { return null; }
@@ -57,6 +65,10 @@ namespace HotelBookingProject0.Services
         public async Task<HotelDTO?> GetHotelByIdAsync(int id)
         {
             var hotel = await hotelBookingContext.Hotels
+                       .Include(h => h.Rooms)
+                           .ThenInclude(r => r.Images)
+                       .Include(h => h.Images)
+                       .Include(h => h.Reviews)
                        .FirstOrDefaultAsync(h => h.HotelID == id);
 
             if (hotel is null) { return null; }
@@ -66,7 +78,18 @@ namespace HotelBookingProject0.Services
                 City = hotel.City,
                 Address = hotel.Address,
                 StarRating = (Models.DTO.HotelStarRating)hotel.StarRating,
-                Status = (Models.DTO.HotelStatus)hotel.Status
+                Status = (Models.DTO.HotelStatus)hotel.Status,
+                Rooms = hotel.Rooms.Select(r => new Models.DTO.RoomDTO
+                {
+                    RoomID = r.RoomID,
+                    HotelID = r.HotelID,
+                    TypeID = r.TypeID,
+                    RoomNumber = r.RoomNumber,
+                    IsAvailable = r.IsAvailable,
+                    Images = r.Images.Select(i => i.ImageURL).ToList()
+                }).ToList(),
+                Images = hotel.Images.Select(i => i.ImageURL).ToList(),
+                AverageReviewScore = hotel.Reviews.Count != 0 ? hotel.Reviews.Average(r => r.Rating) : 0
             };
         }
     }

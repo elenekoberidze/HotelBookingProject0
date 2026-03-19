@@ -43,6 +43,9 @@ namespace HotelBookingProject0.Models.DTO
 
         [Required]
         public HotelStatus Status { get; set; }
+        public List<RoomDTO> Rooms { get; set; } = [];
+        public List<string> Images { get; set; } = [];
+        public double AverageReviewScore { get; set; }
 
     }
 }

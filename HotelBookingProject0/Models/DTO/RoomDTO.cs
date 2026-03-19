@@ -4,6 +4,7 @@ namespace HotelBookingProject0.Models.DTO
 {
     public class RoomDTO
     {
+        public int RoomID { get; set; }
         [Required]
         public int HotelID { get; set; }
         [Required]
@@ -11,5 +12,6 @@ namespace HotelBookingProject0.Models.DTO
         [Required, StringLength(10)]
         public string RoomNumber { get; set; } = null!;
         public bool IsAvailable { get; set; } = true;
+        public List<string> Images { get; set; } = [];
     }
 }

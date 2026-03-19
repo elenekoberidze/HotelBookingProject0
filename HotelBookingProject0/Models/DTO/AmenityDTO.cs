@@ -7,5 +7,6 @@ namespace HotelBookingProject0.Models.DTO
     {
         [Required, StringLength(50)]
         public string Name { get; set; } = null!;
+        public virtual ICollection<Room> Rooms { get; set; } = [];
     }
 }

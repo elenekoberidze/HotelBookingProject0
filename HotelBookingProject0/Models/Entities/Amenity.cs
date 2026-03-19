@@ -10,6 +10,6 @@ namespace HotelBookingProject0.Models.Entities
         [Required, StringLength(50)]
         public string Name { get; set; } = null!;
 
-        public virtual ICollection<Room> Rooms { get; set; } = null!;
+        public virtual ICollection<Room> Rooms { get; set; } = [];
     }
 }
