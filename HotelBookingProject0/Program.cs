@@ -11,9 +11,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -31,7 +28,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
 })
 .AddEntityFrameworkStores<HotelBookingContext>();
 
-// Configure JWT authentication
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -39,13 +36,18 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    var secret = builder.Configuration["Jwt:Secret"]
+        ?? throw new InvalidOperationException("JWT secret is not configured");
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
         ClockSkew = TimeSpan.Zero
     };
 });
@@ -55,6 +57,7 @@ builder.Services.AddScoped<IAuthService, AuthServices>();
 builder.Services.AddScoped<IUserService, UserServices>();
 builder.Services.AddScoped<IUserProfileService, UserProfileServices>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 var app = builder.Build();
 

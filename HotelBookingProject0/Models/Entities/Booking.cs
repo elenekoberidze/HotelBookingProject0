@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using HotelBookingProject0.Constants;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HotelBookingProject0.Models.Entities
@@ -34,5 +35,8 @@ namespace HotelBookingProject0.Models.Entities
         [Column("CreatedAt")]
         [DataType(DataType.Date)]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Column("Status")]
+        [StringLength(20)]
+        public string Status { get; set; } = BookingStatuses.Pending;
     }
 }

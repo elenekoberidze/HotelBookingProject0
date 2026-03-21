@@ -106,7 +106,7 @@ namespace HotelBookingProject0.Services
 
             await signInManager.SignOutAsync();
         }
-
+        //<inheritdoc/>
         public async Task<AuthResponseDTO> RefreshTokenAsync(string token)
         {
             var rt = await context.RefreshTokens.Include(r => r.User).FirstOrDefaultAsync(r => r.Token == token);
@@ -145,7 +145,7 @@ namespace HotelBookingProject0.Services
                 RefreshToken = newToken
             };
         }
-
+        //<inheritdoc/>
         public async Task RevokeRefreshTokenAsync(string token)
         {
             var rt = await context.RefreshTokens.FirstOrDefaultAsync(r => r.Token == token);
@@ -153,6 +153,7 @@ namespace HotelBookingProject0.Services
             rt.Revoked = DateTime.UtcNow;
             await context.SaveChangesAsync();
         }
+       
 
         private string GenerateJwtToken(User user, IList<string> roles)
         {
@@ -162,9 +163,9 @@ namespace HotelBookingProject0.Services
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-                new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(ClaimTypes.Name, user.UserName ?? string.Empty),
+                new(ClaimTypes.Email, user.Email ?? string.Empty)
             };
 
             foreach (var role in roles)

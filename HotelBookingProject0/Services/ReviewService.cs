@@ -13,7 +13,7 @@ namespace HotelBookingProject0.Services
     {
         private readonly HotelBookingContext context = context;
         private readonly UserManager<User> userManager = userManager;
-
+        //<inheritdoc/>
         public async Task<ReviewResponseDTO> CreateReviewAsync(string userId, ReviewDTO dto)
         {
 
@@ -21,11 +21,15 @@ namespace HotelBookingProject0.Services
                 .AnyAsync(r => r.UserID == userId && r.HotelID == dto.HotelID);
 
             if (alreadyReviewed)
+            {
                 throw new InvalidOperationException("You have already submitted a review for this hotel.");
+            }
 
             bool hotelExists = await context.Hotels.AnyAsync(h => h.HotelID == dto.HotelID);
             if (!hotelExists)
+            {
                 throw new KeyNotFoundException("Hotel not found.");
+            }
 
             var review = new Review
             {
@@ -42,7 +46,7 @@ namespace HotelBookingProject0.Services
 
             return await ProjectToDTO(review);
         }
-
+        //<inheritdoc/>
         public async Task<IEnumerable<ReviewResponseDTO>> GetApprovedReviewsByHotelAsync(int hotelId)
         {
             return await context.Reviews
@@ -53,7 +57,7 @@ namespace HotelBookingProject0.Services
                 .Select(r => MapToDTO(r))
                 .ToListAsync();
         }
-
+        //<inheritdoc/>
         public async Task<IEnumerable<ReviewResponseDTO>> GetMyReviewsAsync(string userId)
         {
             return await context.Reviews
@@ -64,7 +68,7 @@ namespace HotelBookingProject0.Services
                 .Select(r => MapToDTO(r))
                 .ToListAsync();
         }
-
+        //<inheritdoc/>
         public async Task DeleteReviewAsync(int reviewId, string userId)
         {
             var review = await context.Reviews
@@ -72,13 +76,15 @@ namespace HotelBookingProject0.Services
                 ?? throw new KeyNotFoundException("Review not found.");
 
             if (review.Status == ReviewStatuses.Approved)
+            {
                 throw new InvalidOperationException("Approved reviews cannot be deleted.");
+            }
 
             context.Reviews.Remove(review);
             await context.SaveChangesAsync();
         }
 
-
+        //<inheritdoc/>
         public async Task<IEnumerable<ReviewResponseDTO>> GetAllReviewsAsync()
         {
             return await context.Reviews
@@ -88,7 +94,7 @@ namespace HotelBookingProject0.Services
                 .Select(r => MapToDTO(r))
                 .ToListAsync();
         }
-
+        //<inheritdoc/>
         public async Task<IEnumerable<ReviewResponseDTO>> GetPendingReviewsAsync()
         {
             return await context.Reviews
@@ -99,7 +105,7 @@ namespace HotelBookingProject0.Services
                 .Select(r => MapToDTO(r))
                 .ToListAsync();
         }
-
+        //<inheritdoc/>
         public async Task<ReviewResponseDTO> UpdateReviewStatusAsync(
             int reviewId, string status, string? adminNote)
         {
@@ -115,7 +121,7 @@ namespace HotelBookingProject0.Services
             await context.SaveChangesAsync();
             return MapToDTO(review);
         }
-
+        //<inheritdoc/>
         public async Task AdminDeleteReviewAsync(int reviewId)
         {
             var review = await context.Reviews.FindAsync(reviewId)
@@ -125,7 +131,7 @@ namespace HotelBookingProject0.Services
             await context.SaveChangesAsync();
         }
 
-
+       
         private static ReviewResponseDTO MapToDTO(Review r) => new()
         {
             ReviewID = r.ReviewID,
