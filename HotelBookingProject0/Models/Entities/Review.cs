@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using HotelBookingProject0.Constants;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HotelBookingProject0.Models.Entities
@@ -20,6 +21,10 @@ namespace HotelBookingProject0.Models.Entities
         public int Rating { get; set; }
 
         public string Comment { get; set; } = null!;
+        public string Status { get; set; } = ReviewStatuses.Pending;
+
+        [StringLength(500)]
+        public string? AdminNote { get; set; }
 
         public DateTime ReviewDate { get; set; } = DateTime.UtcNow;
     }

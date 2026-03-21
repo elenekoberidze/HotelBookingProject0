@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HotelBookingProject0.Models.DTO
+namespace HotelBookingProject0.Models.DTO.ReviewDTOs
 {
     public class ReviewDTO
     {
