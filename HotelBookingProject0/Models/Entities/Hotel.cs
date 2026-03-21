@@ -24,6 +24,7 @@ namespace HotelBookingProject0.Models.Entities
     public class Hotel
     {
         [Key]
+        [Column("hotel_id")]
         public int HotelID { get; set; }
 
         [Required(ErrorMessage = "Hotel name is mandatory")]
