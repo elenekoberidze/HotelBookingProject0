@@ -31,18 +31,20 @@ namespace HotelBookingProject0.Controllers
         }
 
         [HttpGet("GetHotelsBy{city}")]
-        public async Task<ActionResult<HotelDTO>> GetByCity(string city)
+        public async Task<IActionResult> GetHotelsByCity(string city)
         {
-            var hotel = await hotelServices.GetHotelByCityAsync(city);
-            if (hotel == null)
+            var hotels = await hotelServices.GetHotelsByCityAsync(city);
+
+            if (!hotels.Any())
             {
-                return NotFound(new { message = $"Hotel in  {city} was not found." });
+                return NotFound(new { message = $"No hotels found in {city}." });
             }
-            return Ok(hotel);
+
+            return Ok(hotels);
         }
 
 
-    [HttpGet("GetCities")]
+        [HttpGet("GetCities")]
         public async Task<ActionResult<IEnumerable<HotelDTO>>> GetCities()
         {
             var hotels = await hotelServices.GetCitiesAsync();

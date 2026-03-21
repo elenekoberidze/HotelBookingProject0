@@ -28,37 +28,31 @@ namespace HotelBookingProject0.Services
                 }).ToListAsync();
         }
         //<inheritdoc/>
-        public async Task<IEnumerable<HotelDTO>> GetCitiesAsync()
+        public async Task<IEnumerable<string>> GetCitiesAsync()
         {
-            return await hotelBookingContext.Hotels.Select(h => new HotelDTO
-            {
-                Name = h.Name,
-                City = h.City,
-                Address = h.Address,
-                StarRating = (Models.DTO.HotelStarRating)h.StarRating,
-                Status = (Models.DTO.HotelStatus)h.Status
-            }).ToListAsync();
+            return await hotelBookingContext.Hotels
+                .Select(h => h.City)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToListAsync();
         }
 
         //<inheritdoc/>
-        public async Task<HotelDTO?> GetHotelByCityAsync(string city)
+        public async Task<IEnumerable<HotelDTO>> GetHotelsByCityAsync(string city)
         {
-            var hotel = await hotelBookingContext.Hotels
-                       .Include(h => h.Rooms)
-                           .ThenInclude(r => r.Images)
-                       .Include(h => h.Images)
-                       .Include(h => h.Reviews)
-                       .FirstOrDefaultAsync(h => h.City == city);
-
-            if (hotel is null) { return null; }
-            return new HotelDTO
-            {
-                Name = hotel.Name,
-                City = hotel.City,
-                Address = hotel.Address,
-                StarRating = (Models.DTO.HotelStarRating)hotel.StarRating,
-                Status = (Models.DTO.HotelStatus)hotel.Status
-            };
+            return await hotelBookingContext.Hotels
+                .Include(h => h.Images)
+                .Where(h => h.City.ToLower() == city.ToLower()
+                    && h.Status == Models.Entities.HotelStatus.Active)
+                .Select(h => new HotelDTO
+                {
+                    Name = h.Name,
+                    City = h.City,
+                    Address = h.Address,
+                    StarRating = (Models.DTO.HotelStarRating)h.StarRating,
+                    Status = (Models.DTO.HotelStatus)h.Status
+                })
+                .ToListAsync();
         }
 
         //<inheritdoc/>
