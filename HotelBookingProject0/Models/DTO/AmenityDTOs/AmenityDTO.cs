@@ -1,12 +1,12 @@
 ﻿using HotelBookingProject0.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace HotelBookingProject0.Models.DTO
+namespace HotelBookingProject0.Models.DTO.AmenityDTOs
 {
     public class AmenityDTO
     {
         [Required, StringLength(50)]
         public string Name { get; set; } = null!;
-        public virtual ICollection<Room> Rooms { get; set; } = [];
+       
     }
 }
