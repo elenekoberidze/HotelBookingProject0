@@ -61,6 +61,7 @@ builder.Services.AddScoped<IUserService, UserServices>();
 builder.Services.AddScoped<IUserProfileService, UserProfileServices>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
 
 var app = builder.Build();
 

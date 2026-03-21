@@ -1,5 +1,6 @@
 ﻿using HotelBookingProject0.Data;
 using HotelBookingProject0.Models.DTO;
+using HotelBookingProject0.Models.DTO.RoomDTOs;
 using HotelBookingProject0.Models.Entities;
 using HotelBookingProject0.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -73,7 +74,7 @@ namespace HotelBookingProject0.Services
                 Address = hotel.Address,
                 StarRating = (Models.DTO.HotelStarRating)hotel.StarRating,
                 Status = (Models.DTO.HotelStatus)hotel.Status,
-                Rooms = hotel.Rooms.Select(r => new Models.DTO.RoomDTO
+                Rooms = hotel.Rooms.Select(r => new Models.DTO.RoomDTOs.RoomDTO
                 {
                     RoomID = r.RoomID,
                     HotelID = r.HotelID,

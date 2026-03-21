@@ -22,6 +22,9 @@ namespace HotelBookingProject0.Models.Entities
         [Column("RoomNumber", TypeName = "nvarchar(10)")]
         public string RoomNumber { get; set; } = null!;
         [Column("Price", TypeName = "decimal(18,2)")]
+        public decimal Price { get; set; }
+
+        [Column("IsAvailable")]
         public bool IsAvailable { get; set; } = true;
 
         public virtual ICollection<Booking> Bookings { get; set; } = [];

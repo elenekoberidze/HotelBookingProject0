@@ -1,4 +1,5 @@
-﻿using HotelBookingProject0.Models.Entities;
+﻿using HotelBookingProject0.Models.DTO.RoomDTOs;
+using HotelBookingProject0.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
