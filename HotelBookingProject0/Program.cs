@@ -1,11 +1,12 @@
 using HotelBookingProject0.Constants;
 using HotelBookingProject0.Data;
+using HotelBookingProject0.Middleware;
 using HotelBookingProject0.Models.Entities;
 using HotelBookingProject0.Services;
 using HotelBookingProject0.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -51,6 +52,8 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddScoped<IHotelServices, HotelServices>();
 builder.Services.AddScoped<IAuthService, AuthServices>();
@@ -80,6 +83,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
