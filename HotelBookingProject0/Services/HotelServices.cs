@@ -1,5 +1,5 @@
 ﻿using HotelBookingProject0.Data;
-using HotelBookingProject0.Models.DTO;
+using HotelBookingProject0.Models.DTO.HotelDTOs;
 using HotelBookingProject0.Models.DTO.RoomDTOs;
 using HotelBookingProject0.Models.Entities;
 using HotelBookingProject0.Services.Interfaces;
@@ -11,23 +11,49 @@ namespace HotelBookingProject0.Services
     public class HotelServices(HotelBookingContext hotelBookingContext) : IHotelServices
     {
         private readonly HotelBookingContext hotelBookingContext = hotelBookingContext;
-       
+
         //<inheritdoc/>
-        public async Task<IEnumerable<HotelDTO>> GetAllHotelsAsync()
+        public async Task<PagedHotelResponseDTO> GetAllHotelsAsync(int page = 1, int pageSize = 10)
         {
-            return await hotelBookingContext.Hotels
+            var query = hotelBookingContext.Hotels
                 .Include(h => h.Images)
+                .Include(h => h.Reviews)
+                .AsQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            var hotels = await query
+                .OrderBy(h => h.HotelID)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(h => new HotelDTO
                 {
+                    HotelID = h.HotelID,
                     Name = h.Name,
                     City = h.City,
                     Address = h.Address,
-                    StarRating = (Models.DTO.HotelStarRating)h.StarRating,
-                    Status = (Models.DTO.HotelStatus)h.Status,
+                    Description = h.Description,
+                    StarRating = (Models.DTO.HotelDTOs.HotelStarRating)h.StarRating,
+                    Status = (Models.DTO.HotelDTOs.HotelStatus)h.Status,
                     Images = h.Images.Select(i => i.ImageURL).ToList(),
-                    AverageReviewScore = h.Reviews.Count != 0 ? h.Reviews.Average(r => r.Rating) : 0
-                }).ToListAsync();
+                    PrimaryImage = h.Images.Where(i => i.IsPrimary).Select(i => i.ImageURL).FirstOrDefault()
+                        ?? h.Images.Select(i => i.ImageURL).FirstOrDefault(),
+                    AverageReviewScore = h.Reviews.Count != 0
+                        ? Math.Round(h.Reviews.Average(r => r.Rating), 1)
+                        : 0
+                })
+                .ToListAsync();
+
+            return new PagedHotelResponseDTO
+            {
+                Hotels = hotels,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
         }
+
         //<inheritdoc/>
         public async Task<IEnumerable<string>> GetCitiesAsync()
         {
@@ -43,15 +69,24 @@ namespace HotelBookingProject0.Services
         {
             return await hotelBookingContext.Hotels
                 .Include(h => h.Images)
-                .Where(h => h.City.ToLower() == city.ToLower()
+                .Include(h => h.Reviews)
+                .Where(h => h.City.Equals(city, StringComparison.CurrentCultureIgnoreCase)
                     && h.Status == Models.Entities.HotelStatus.Active)
                 .Select(h => new HotelDTO
                 {
+                    HotelID = h.HotelID,
                     Name = h.Name,
                     City = h.City,
                     Address = h.Address,
-                    StarRating = (Models.DTO.HotelStarRating)h.StarRating,
-                    Status = (Models.DTO.HotelStatus)h.Status
+                    Description = h.Description,
+                    StarRating = (Models.DTO.HotelDTOs.HotelStarRating)h.StarRating,
+                    Status = (Models.DTO.HotelDTOs.HotelStatus)h.Status,
+                    Images = h.Images.Select(i => i.ImageURL).ToList(),
+                    PrimaryImage = h.Images.Where(i => i.IsPrimary).Select(i => i.ImageURL).FirstOrDefault()
+                        ?? h.Images.Select(i => i.ImageURL).FirstOrDefault(),
+                    AverageReviewScore = h.Reviews.Count != 0
+                        ? Math.Round(h.Reviews.Average(r => r.Rating), 1)
+                        : 0
                 })
                 .ToListAsync();
         }
@@ -60,21 +95,26 @@ namespace HotelBookingProject0.Services
         public async Task<HotelDTO?> GetHotelByIdAsync(int id)
         {
             var hotel = await hotelBookingContext.Hotels
-                       .Include(h => h.Rooms)
-                           .ThenInclude(r => r.Images)
-                       .Include(h => h.Images)
-                       .Include(h => h.Reviews)
-                       .FirstOrDefaultAsync(h => h.HotelID == id);
+                .Include(h => h.Rooms)
+                    .ThenInclude(r => r.Images)
+                .Include(h => h.Rooms)
+                    .ThenInclude(r => r.RoomType)
+                .Include(h => h.Images)
+                .Include(h => h.Reviews)
+                .FirstOrDefaultAsync(h => h.HotelID == id);
 
             if (hotel is null) { return null; }
+
             return new HotelDTO
             {
+                HotelID = hotel.HotelID,
                 Name = hotel.Name,
                 City = hotel.City,
                 Address = hotel.Address,
-                StarRating = (Models.DTO.HotelStarRating)hotel.StarRating,
-                Status = (Models.DTO.HotelStatus)hotel.Status,
-                Rooms = hotel.Rooms.Select(r => new Models.DTO.RoomDTOs.RoomDTO
+                Description = hotel.Description,
+                StarRating = (Models.DTO.HotelDTOs.HotelStarRating)hotel.StarRating,
+                Status = (Models.DTO.HotelDTOs.HotelStatus)hotel.Status,
+                Rooms = hotel.Rooms.Select(r => new RoomDTO
                 {
                     RoomID = r.RoomID,
                     HotelID = r.HotelID,
@@ -84,7 +124,11 @@ namespace HotelBookingProject0.Services
                     Images = r.Images.Select(i => i.ImageURL).ToList()
                 }).ToList(),
                 Images = hotel.Images.Select(i => i.ImageURL).ToList(),
-                AverageReviewScore = hotel.Reviews.Count != 0 ? hotel.Reviews.Average(r => r.Rating) : 0
+                PrimaryImage = hotel.Images.Where(i => i.IsPrimary).Select(i => i.ImageURL).FirstOrDefault()
+                    ?? hotel.Images.Select(i => i.ImageURL).FirstOrDefault(),
+                AverageReviewScore = hotel.Reviews.Count != 0
+                    ? Math.Round(hotel.Reviews.Average(r => r.Rating), 1)
+                    : 0
             };
         }
     }

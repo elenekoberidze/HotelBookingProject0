@@ -1,25 +1,26 @@
-﻿using HotelBookingProject0.Models.DTO;
+﻿using HotelBookingProject0.Models.DTO.HotelDTOs;
 
 namespace HotelBookingProject0.Services.Interfaces
 {
     public interface IHotelServices
     {
         /// <summary>
-        /// This method returns a list of all hotels in the system. 
-        /// It retrieves hotel data from the database and maps it to a collection of HotelDTO objects,
-        /// which are then returned to the caller.
+        /// Returns a paginated list of all hotels. Use page=1 and pageSize=10 by default.
         /// </summary>
-        Task<IEnumerable<HotelDTO>> GetAllHotelsAsync();
+        Task<PagedHotelResponseDTO> GetAllHotelsAsync(int page = 1, int pageSize = 10);
+
         /// <summary>
-        /// This method retrieves a specific hotel by its unique identifier (ID).
+        /// Returns a specific hotel by its ID including rooms and reviews.
         /// </summary>
         Task<HotelDTO?> GetHotelByIdAsync(int id);
+
         /// <summary>
-        /// Asynchronously retrieves hotel information for the specified city.
+        /// Returns all active hotels in a given city.
         /// </summary>
         Task<IEnumerable<HotelDTO>> GetHotelsByCityAsync(string city);
+
         /// <summary>
-        /// This method returns a list of all Cities in the system. 
+        /// Returns a distinct list of all cities that have at least one hotel.
         /// </summary>
         Task<IEnumerable<string>> GetCitiesAsync();
 

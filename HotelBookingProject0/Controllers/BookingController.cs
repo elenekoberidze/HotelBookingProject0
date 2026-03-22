@@ -16,7 +16,7 @@ namespace HotelBookingProject0.Controllers
 
         [HttpPost("CreateBooking")]
         [Authorize(Roles = Roles.Customer)]
-        public async Task<IActionResult> CreateBooking([FromForm] BookingDTO dto)
+        public async Task<IActionResult> CreateBooking([FromBody] BookingDTO dto)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
 
@@ -31,7 +31,6 @@ namespace HotelBookingProject0.Controllers
             catch (ArgumentException ex) { return BadRequest(new { message = ex.Message }); }
         }
 
-       
         [HttpGet("GetCurrentUserBookings")]
         [Authorize(Roles = Roles.Customer)]
         public async Task<IActionResult> GetCurrentUserBookings()
@@ -41,7 +40,6 @@ namespace HotelBookingProject0.Controllers
             return Ok(result);
         }
 
-      
         [HttpGet("GetCurrentUserBookingBy{bookingId}")]
         [Authorize(Roles = Roles.Customer)]
         public async Task<IActionResult> GetCurrentUserBookingById(int bookingId)
@@ -55,7 +53,6 @@ namespace HotelBookingProject0.Controllers
             catch (KeyNotFoundException ex) { return NotFound(new { message = ex.Message }); }
         }
 
-       
         [HttpPatch("CancelBookingBy{bookingId}")]
         [Authorize(Roles = Roles.Customer)]
         public async Task<IActionResult> CancelBooking(int bookingId)
@@ -70,16 +67,19 @@ namespace HotelBookingProject0.Controllers
             catch (InvalidOperationException ex) { return BadRequest(new { message = ex.Message }); }
         }
 
-       
         [HttpGet("AdminGetAllBookings")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> GetAllBookings()
+        public async Task<IActionResult> GetAllBookings(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20)
         {
-            var result = await bookingService.GetAllBookingsAsync();
+            if (page < 1) { page = 1; }
+            if (pageSize < 1 || pageSize > 100) { pageSize = 20; }
+
+            var result = await bookingService.GetAllBookingsAsync(page, pageSize);
             return Ok(result);
         }
 
-       
         [HttpGet("AdminGetBookingsBy{status}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetBookingsByStatus(string status)
@@ -88,7 +88,6 @@ namespace HotelBookingProject0.Controllers
             return Ok(result);
         }
 
-       
         [HttpGet("AdminGetBookingBy{hotelId}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetBookingsByHotel(int hotelId)
@@ -97,7 +96,6 @@ namespace HotelBookingProject0.Controllers
             return Ok(result);
         }
 
-       
         [HttpPatch("AdminUpdateBookingStatus{bookingId}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> UpdateBookingStatus(

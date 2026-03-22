@@ -10,16 +10,17 @@ namespace HotelBookingProject0.Services
     public class BookingService(HotelBookingContext context) : IBookingService
     {
         private readonly HotelBookingContext context = context;
+
         //<inheritdoc/>
         public async Task<BookingResponseDTO> CreateBookingAsync(string userId, BookingDTO dto)
         {
             if (dto.CheckInDate.Date < DateTime.UtcNow.Date)
-            { 
+            {
                 throw new ArgumentException("Check-in date cannot be in the past.");
             }
 
             if (dto.CheckOutDate.Date <= dto.CheckInDate.Date)
-            { 
+            {
                 throw new ArgumentException("Check-out date must be after check-in date.");
             }
 
@@ -34,12 +35,11 @@ namespace HotelBookingProject0.Services
                 throw new InvalidOperationException("This room is not available.");
             }
 
-            
-            bool hasOverlap = await context.Bookings
-                .AnyAsync(b => b.RoomID == dto.RoomID
-                    && b.Status != BookingStatuses.Cancelled
-                    && b.CheckInDate < dto.CheckOutDate
-                    && b.CheckOutDate > dto.CheckInDate);
+            bool hasOverlap = await context.Bookings.AnyAsync(b =>
+                b.RoomID == dto.RoomID &&
+                b.Status != BookingStatuses.Cancelled &&
+                b.CheckInDate < dto.CheckOutDate &&
+                b.CheckOutDate > dto.CheckInDate);
 
             if (hasOverlap)
             {
@@ -70,6 +70,7 @@ namespace HotelBookingProject0.Services
 
             return MapToDTO(booking);
         }
+
         //<inheritdoc/>
         public async Task<IEnumerable<BookingResponseDTO>> GetMyBookingsAsync(string userId)
         {
@@ -82,6 +83,7 @@ namespace HotelBookingProject0.Services
                 .Select(b => MapToDTO(b))
                 .ToListAsync();
         }
+
         //<inheritdoc/>
         public async Task<BookingResponseDTO> GetMyBookingByIdAsync(int bookingId, string userId)
         {
@@ -94,6 +96,7 @@ namespace HotelBookingProject0.Services
 
             return MapToDTO(booking);
         }
+
         //<inheritdoc/>
         public async Task CancelBookingAsync(int bookingId, string userId)
         {
@@ -106,35 +109,48 @@ namespace HotelBookingProject0.Services
                 throw new InvalidOperationException("Booking is already cancelled.");
             }
 
-            if (booking.Status == BookingStatuses.CheckedIn ||
-                booking.Status == BookingStatuses.CheckedOut)
+            if (booking.Status == BookingStatuses.CheckedIn || booking.Status == BookingStatuses.CheckedOut)
             {
-                throw new InvalidOperationException(
-                    $"Cannot cancel a booking with status '{booking.Status}'.");
+                throw new InvalidOperationException($"Cannot cancel a booking with status '{booking.Status}'.");
             }
 
             if (booking.CheckInDate.Date <= DateTime.UtcNow.Date)
             {
-                throw new InvalidOperationException(
-                    "Cannot cancel a booking on or after the check-in date.");
+                throw new InvalidOperationException("Cannot cancel a booking on or after the check-in date.");
             }
 
             booking.Status = BookingStatuses.Cancelled;
             await context.SaveChangesAsync();
         }
 
-
         //<inheritdoc/>
-        public async Task<IEnumerable<BookingResponseDTO>> GetAllBookingsAsync()
+        public async Task<PagedBookingResponseDTO> GetAllBookingsAsync(int page = 1, int pageSize = 20)
         {
-            return await context.Bookings
+            var query = context.Bookings
                 .Include(b => b.User)
                 .Include(b => b.Room).ThenInclude(r => r.RoomType)
                 .Include(b => b.Room).ThenInclude(r => r.Hotel)
                 .OrderByDescending(b => b.CreatedAt)
+                .AsQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            var bookings = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(b => MapToDTO(b))
                 .ToListAsync();
+
+            return new PagedBookingResponseDTO
+            {
+                Bookings = bookings,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
         }
+
         //<inheritdoc/>
         public async Task<IEnumerable<BookingResponseDTO>> GetBookingsByStatusAsync(string status)
         {
@@ -147,6 +163,7 @@ namespace HotelBookingProject0.Services
                 .Select(b => MapToDTO(b))
                 .ToListAsync();
         }
+
         //<inheritdoc/>
         public async Task<BookingResponseDTO> UpdateBookingStatusAsync(int bookingId, string status)
         {
@@ -157,7 +174,6 @@ namespace HotelBookingProject0.Services
                 .FirstOrDefaultAsync(b => b.BookingID == bookingId)
                 ?? throw new KeyNotFoundException("Booking not found.");
 
-           
             var allowed = booking.Status switch
             {
                 BookingStatuses.Pending => [BookingStatuses.Confirmed, BookingStatuses.Cancelled],
@@ -168,14 +184,15 @@ namespace HotelBookingProject0.Services
 
             if (!allowed.Contains(status))
             {
-                throw new InvalidOperationException(
-                    $"Cannot transition from '{booking.Status}' to '{status}'.");
+                throw new InvalidOperationException($"Cannot transition from '{booking.Status}' to '{status}'.");
             }
+
             booking.Status = status;
             await context.SaveChangesAsync();
 
             return MapToDTO(booking);
         }
+
         //<inheritdoc/>
         public async Task<IEnumerable<BookingResponseDTO>> GetBookingsByHotelAsync(int hotelId)
         {
@@ -188,6 +205,7 @@ namespace HotelBookingProject0.Services
                 .Select(b => MapToDTO(b))
                 .ToListAsync();
         }
+
         //<inheritdoc/>
         public async Task DeleteBookingAsync(int bookingId)
         {
@@ -198,7 +216,6 @@ namespace HotelBookingProject0.Services
             await context.SaveChangesAsync();
         }
 
-      
         private static BookingResponseDTO MapToDTO(Booking b) => new()
         {
             BookingID = b.BookingID,

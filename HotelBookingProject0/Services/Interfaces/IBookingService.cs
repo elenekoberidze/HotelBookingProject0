@@ -5,45 +5,47 @@ namespace HotelBookingProject0.Services.Interfaces
     public interface IBookingService
     {
         /// <summary>
-        /// This method allows a user to create a new booking. It takes the user's ID and a BookingDTO containing the booking details 
-        /// (room, check-in/check-out dates). 
+        /// Creates a booking for the given user. Validates dates, checks room availability, and calculates total price.
         /// </summary>
         Task<BookingResponseDTO> CreateBookingAsync(string userId, BookingDTO dto);
+
         /// <summary>
-        /// This method retrieves all bookings made by a specific user.
-        /// It takes the user's ID as a parameter and returns a list of BookingResponseDTOs,
+        /// Returns all bookings for the specified user, newest first.
         /// </summary>
         Task<IEnumerable<BookingResponseDTO>> GetMyBookingsAsync(string userId);
+
         /// <summary>
-        /// This method retrieves the details of a specific booking made by the user.
-        /// It takes the booking ID and user ID as parameters to ensure that the user can only access their own bookings.
+        /// Returns a specific booking belonging to the given user.
         /// </summary>
         Task<BookingResponseDTO> GetMyBookingByIdAsync(int bookingId, string userId);
+
         /// <summary>
-        /// This method allows a user to cancel one of their bookings. 
-        /// It takes the booking ID and user ID as parameters to ensure that the user can only cancel their own bookings.
+        /// Cancels one of the user's own bookings (before check-in date).
         /// </summary>
         Task CancelBookingAsync(int bookingId, string userId);
 
         /// <summary>
-        /// This method retrieves all bookings in the system, regardless of the user.(Admin)
+        /// Returns a paginated list of all bookings in the system. Admin only.
         /// </summary>
-        Task<IEnumerable<BookingResponseDTO>> GetAllBookingsAsync();
+        Task<PagedBookingResponseDTO> GetAllBookingsAsync(int page = 1, int pageSize = 20);
+
         /// <summary>
-        /// This method retrieves all bookings with a specific status (e.g., "Confirmed", "Cancelled", "Pending").(Admin)
+        /// Returns all bookings that match the given status (e.g. Pending, Confirmed). Admin only.
         /// </summary>
         Task<IEnumerable<BookingResponseDTO>> GetBookingsByStatusAsync(string status);
+
         /// <summary>
-        /// this method allows an admin to update the status of a booking (e.g., from "Pending" to "Confirmed" or "Cancelled").(Admin)
+        /// Updates the status of a booking following allowed transitions. Admin only.
         /// </summary>
         Task<BookingResponseDTO> UpdateBookingStatusAsync(int bookingId, string status);
+
         /// <summary>
-        /// this method retrieves all bookings for a specific hotel, which can be useful for hotel staff to manage their reservations.(Admin)
+        /// Returns all bookings for a specific hotel. Admin only.
         /// </summary>
         Task<IEnumerable<BookingResponseDTO>> GetBookingsByHotelAsync(int hotelId);
+
         /// <summary>
-        /// this method allows an admin to delete a booking from the system.
-        /// It takes the booking ID as a parameter and removes the corresponding booking record from the database.(Admin)
+        /// Permanently deletes a booking record. Admin only.
         /// </summary>
         Task DeleteBookingAsync(int bookingId);
     }
