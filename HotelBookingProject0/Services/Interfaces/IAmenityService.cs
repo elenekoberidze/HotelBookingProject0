@@ -12,7 +12,6 @@ namespace HotelBookingProject0.Services.Interfaces
        /// <summary>
        /// This Methods gets amenity by their id.
        /// </summary>
-       /// <param name="id"></param>
         Task<AmenityResponseDTO?> GetAmenityByIdAsync(int id);
         /// <summary>
         /// This Methods adds amenity created by admin.

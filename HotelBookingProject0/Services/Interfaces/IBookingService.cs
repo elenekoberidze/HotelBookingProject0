@@ -7,8 +7,6 @@ namespace HotelBookingProject0.Services.Interfaces
         /// <summary>
         /// This method allows a user to create a new booking. It takes the user's ID and a BookingDTO containing the booking details 
         /// (room, check-in/check-out dates). 
-        /// The service will validate the input, check room availability, calculate the total price, and save the booking to the database. 
-        /// It returns a BookingResponseDTO with the details of the created booking.
         /// </summary>
         Task<BookingResponseDTO> CreateBookingAsync(string userId, BookingDTO dto);
         /// <summary>
