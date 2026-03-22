@@ -1,33 +1,30 @@
-﻿using HotelBookingProject0.Models.DTO.AmenityDTOs;
+﻿using HotelBookingProject0.Models.DTO;
+using HotelBookingProject0.Models.DTO.AmenityDTOs;
 
 namespace HotelBookingProject0.Services.Interfaces
 {
     public interface IAmenityService
     {
-        /// <summary>
-        /// this method gets all amenities
-        /// </summary>
-        /// <returns></returns>
+       /// <summary>
+       /// This method gets all amenities.
+       /// </summary>
         Task<IEnumerable<AmenityResponseDTO>> GetAllAmenitiesAsync();
-        /// <summary>
-        /// this method gets amenitys by id
-        /// </summary>
-        
+       /// <summary>
+       /// This Methods gets amenity by their id.
+       /// </summary>
+       /// <param name="id"></param>
         Task<AmenityResponseDTO?> GetAmenityByIdAsync(int id);
         /// <summary>
-        /// this method creates a new amenity
+        /// This Methods adds amenity created by admin.
         /// </summary>
-
         Task<AmenityResponseDTO> CreateAmenityAsync(AmenityDTO dto);
         /// <summary>
-        /// this method updates amenity
+        ///  This Methods updates amenity created by admin.
         /// </summary>
-
         Task<AmenityResponseDTO> UpdateAmenityAsync(int id, AmenityDTO dto);
         /// <summary>
-        /// this method deletes amenity
+        ///  This Methods deletes amenity created by admin.
         /// </summary>
-
         Task DeleteAmenityAsync(int id);
     }
 }
