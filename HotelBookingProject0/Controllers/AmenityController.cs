@@ -19,12 +19,14 @@ namespace HotelBookingProject0.Controllers
             var result = await amenityService.GetAllAmenitiesAsync();
             return Ok(result);
         }
-        [HttpGet("GetById/{id}")]
+        [HttpGet("GetBy{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await amenityService.GetAmenityByIdAsync(id);
             if (result == null)
+            {
                 return NotFound(new { message = $"Amenity with ID {id} not found." });
+            }
             return Ok(result);
         }
 
@@ -32,7 +34,7 @@ namespace HotelBookingProject0.Controllers
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Create([FromForm] AmenityDTO dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
             try
             {
                 var result = await amenityService.CreateAmenityAsync(dto);
@@ -43,11 +45,11 @@ namespace HotelBookingProject0.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
-        [HttpPut("Update/{id}")]
+        [HttpPut("Update{id}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Update(int id, [FromForm] AmenityDTO dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) { return BadRequest(ModelState); }
             try
             {
                 var result = await amenityService.UpdateAmenityAsync(id, dto);
@@ -58,7 +60,7 @@ namespace HotelBookingProject0.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("DeleteBy{id}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {

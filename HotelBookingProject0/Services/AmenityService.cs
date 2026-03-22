@@ -9,7 +9,7 @@ namespace HotelBookingProject0.Services
     public class AmenityService(HotelBookingContext context) : IAmenityService
     {
         private readonly HotelBookingContext context = context;
-
+        //<inheritdoc/>
         public async Task<IEnumerable<AmenityResponseDTO>> GetAllAmenitiesAsync()
         {
             return await context.Amenities
@@ -22,6 +22,7 @@ namespace HotelBookingProject0.Services
                 })
                 .ToListAsync();
         }
+        //<inheritdoc/>
         public async Task<AmenityResponseDTO?> GetAmenityByIdAsync(int id)
         {
             return await context.Amenities
@@ -35,12 +36,15 @@ namespace HotelBookingProject0.Services
                 })
                 .FirstOrDefaultAsync();
         }
+        //<inheritdoc/>
         public async Task<AmenityResponseDTO> CreateAmenityAsync(AmenityDTO dto)
         {
             var existing = await context.Amenities
                 .FirstOrDefaultAsync(a => a.Name == dto.Name);
             if (existing != null)
+            {
                 throw new InvalidOperationException($"Amenity '{dto.Name}' already exists.");
+            }
 
             var amenity = new Amenity { Name = dto.Name };
             context.Amenities.Add(amenity);
@@ -53,6 +57,7 @@ namespace HotelBookingProject0.Services
                 Rooms = []
             };
         }
+        //<inheritdoc/>
         public async Task<AmenityResponseDTO> UpdateAmenityAsync(int id, AmenityDTO dto)
         {
             var amenity = await context.Amenities
@@ -67,9 +72,10 @@ namespace HotelBookingProject0.Services
             {
                 AmenityID = amenity.AmenityID,
                 Name = amenity.Name,
-                Rooms = amenity.Rooms.Select(r => r.RoomNumber).ToList()
+                Rooms = [.. amenity.Rooms.Select(r => r.RoomNumber)]
             };
         }
+        //<inheritdoc/>
         public async Task DeleteAmenityAsync(int id)
         {
             var amenity = await context.Amenities.FindAsync(id)
@@ -78,5 +84,7 @@ namespace HotelBookingProject0.Services
             context.Amenities.Remove(amenity);
             await context.SaveChangesAsync();
         }
+
+       
     }
 }
