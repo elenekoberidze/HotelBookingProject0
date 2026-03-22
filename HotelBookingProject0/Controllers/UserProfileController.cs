@@ -21,7 +21,7 @@ namespace HotelBookingProject0.Controllers
         }
 
         [HttpPut("current-user")]
-        public async Task<IActionResult> UpdateProfile(UserProfileDTO dto)
+        public async Task<IActionResult> UpdateProfile([FromBody] UserProfileDTO dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var result = await profileService.UpdateProfileAsync(userId, dto);
