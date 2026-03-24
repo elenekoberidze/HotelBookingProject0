@@ -105,16 +105,8 @@ builder.Services.AddCors(options =>
             .WithOrigins(
                 "http://localhost:4200",
                 "https://localhost:4200",
-                "http://localhost:56144",
-                "https://localhost:56144",
-                "http://localhost:64611",
-                "https://localhost:64611",
-                "http://localhost:59668",
-                "https://localhost:59668",
-                "http://localhost:56906",
-                "https://localhost:56906",
-                 "http://localhost:57325",
-                   "https://localhost:57325"
+                "http://localhost:59367",
+                "https://localhost:59367"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -191,12 +183,12 @@ if (app.Environment.IsDevelopment())
         c.DisplayRequestDuration();
     });
 }
-
+app.UseCors("AllowAngular");
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseCors("AllowAngular");
+
 
 app.UseAuthentication();
 app.UseAuthorization();
