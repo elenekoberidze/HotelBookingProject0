@@ -183,12 +183,12 @@ if (app.Environment.IsDevelopment())
         c.DisplayRequestDuration();
     });
 }
-app.UseCors("AllowAngular");
+
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-
+app.UseCors("AllowAngular");
 
 app.UseAuthentication();
 app.UseAuthorization();
