@@ -12,7 +12,10 @@ using System.Text;
 
 namespace HotelBookingProject0.Services
 {
-    public class AuthServices(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, HotelBookingContext context) : IAuthService
+    public class AuthServices(UserManager<User> userManager,
+        SignInManager<User> signInManager, 
+        IConfiguration configuration,
+        HotelBookingContext context) : IAuthService
     {
         private readonly IConfiguration configuration = configuration;
         private readonly HotelBookingContext context = context;
