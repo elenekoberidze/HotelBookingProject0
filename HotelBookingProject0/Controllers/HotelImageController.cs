@@ -22,7 +22,7 @@ namespace HotelBookingProject0.Controllers
 
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> Add([FromBody] HotelImageDTO dto)
+        public async Task<IActionResult> Add([FromForm] HotelImageDTO dto)
         {
             if (!ModelState.IsValid)
             {
