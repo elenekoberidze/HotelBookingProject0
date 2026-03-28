@@ -16,7 +16,7 @@ namespace HotelBookingProject0.Controllers
 
         [HttpPost("CreateBooking")]
         [Authorize(Roles = Roles.Customer)]
-        public async Task<IActionResult> CreateBooking([FromForm] BookingDTO dto)
+        public async Task<IActionResult> CreateBooking([FromBody] BookingDTO dto)
         {
             if (!ModelState.IsValid) { return BadRequest(ModelState); }
 

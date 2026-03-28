@@ -34,7 +34,7 @@ namespace HotelBookingProject0.Controllers
 
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> Create([FromForm] RoomTypeDTO dto)
+        public async Task<IActionResult> Create([FromBody] RoomTypeDTO dto)
         {
             if (!ModelState.IsValid)
             {
@@ -47,7 +47,7 @@ namespace HotelBookingProject0.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> Update(int id, [FromForm] RoomTypeDTO dto)
+        public async Task<IActionResult> Update(int id, [FromBody] RoomTypeDTO dto)
         {
             if (!ModelState.IsValid)
             {
