@@ -70,7 +70,7 @@ namespace HotelBookingProject0.Services
             return await hotelBookingContext.Hotels
                 .Include(h => h.Images)
                 .Include(h => h.Reviews)
-                .Where(h => h.City.Equals(city, StringComparison.CurrentCultureIgnoreCase)
+                .Where(h => h.City.ToLower() == city.ToLower()
                     && h.Status == Models.Entities.HotelStatus.Active)
                 .Select(h => new HotelDTO
                 {
@@ -90,7 +90,6 @@ namespace HotelBookingProject0.Services
                 })
                 .ToListAsync();
         }
-
         //<inheritdoc/>
         public async Task<HotelDTO?> GetHotelByIdAsync(int id)
         {
