@@ -144,7 +144,7 @@ On first run, the app auto-seeds an admin account:
  
 - **Email:** `ADMINelenekoberidze@gmail.com`
 - **Password:** `Admin123#`
-> ⚠️ Change this password (and remove the hardcoded seed credentials) before deploying anywhere public.
+
  
 ---
  
